@@ -1,0 +1,27 @@
+
+{% block content %}
+<h1>Your Profile</h1>
+<form method="post">
+    {% csrf_token %}
+    <p>
+        <label for="username">Username:</label>
+        <input type="text" id="username" value="{{ profile.user.username }}" readonly>
+    </p>
+    <p>
+        <label for="email">Email:</label>
+        <input type="email" id="email" value="{{ profile.user.email }}" readonly>
+    </p>
+    <p>
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" value="{{ profile.phone_number }}" required>
+    </p>
+    <button type="submit">Update</button>
+</form>
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

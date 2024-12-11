@@ -1,32 +1,40 @@
-{% include 'nav/navbar.html' %} 
+{% extends "base.html" %}
 
 {% block content %}
-<h1>Available Orders</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Location</th>
-            <th>Items</th>
-            <th>Preferred Delivery Time</th>
-            <th>Category</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for order in orders %}
-        <tr>
-            <td>{{ order.location }}</td>
-            <td>{{ order.items }}</td>
-            <td>{{ order.preferred_delivery_time }}</td>
-            <td>{{ order.get_category_display }}</td>
-            <td>
-                <form method="post" action="{% url 'claim_order' order.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Claim</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<main class="main-content">
+    <div class="header">Latest Orders</div>
+    {% for order in orders %}
+        {% if order.is_claimed == False %}
+            <div class="post">
+                <div class="post-header">
+                    <div class="avatar"></div>
+                    <div class="post-info">
+                        <span class="user-name">{{order.user}}</span>
+
+                        {% if order.is_claimed == False %}
+                            <span class="order-tag available">Available</span>
+                        {% else %}
+                            <span class="order-tag claimed">Claimed</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="post-content">
+                    {{order.items}}
+                    Need at: {{order.preferred_delivery_time}}
+                </div>
+                <div class="post-actions">
+                    <span class="action">💬 {{order.category}}</span>
+                    <span class="action">📍 {{order.location}}</span>
+                    <span class="action">📍 {{order.created_at}}</span>
+                </div>
+                {% if order.is_claimed == False %}
+                <a href="{% url 'claim_order_page' order.id %}">
+                    <button class="claim-button">Claim</button>
+                </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+</main>
 {% endblock %}

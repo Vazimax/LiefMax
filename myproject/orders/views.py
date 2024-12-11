@@ -6,6 +6,21 @@ from .models import Order, Review
 from .forms import OrderForm, ReviewForm, UserRegistrationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib import messages
+
+@login_required
+def profile_view(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        phone_number = request.POST.get('phone_number')
+        if phone_number:
+            profile.phone_number = phone_number
+            profile.save()
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Phone number is required.')
+    return render(request, 'accounts/profile.html', {'profile': profile})
 
 
 @login_required
@@ -27,15 +42,38 @@ def order_list(request):
     return render(request, 'orders/order_list.html', {'orders': orders})
 
 @login_required
-def claim_order(request, order_id):
+def claim_order_page(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    if not order.is_claimed:
-        order.delivery_agent = request.user
-        order.is_claimed = True
-        order.save()
-        order.delete()
-        return redirect('order_list')
-    return JsonResponse({'error': 'Order already claimed'}, status=400)
+    if order.is_claimed:
+        return JsonResponse({'error': 'Order already claimed'}, status=400)
+
+    if request.method == 'POST':
+        expected_delivery_time = request.POST.get('expected_delivery_time')
+
+        if expected_delivery_time:
+            order.is_claimed = True
+            order.delivery_agent = request.user
+            order.save()
+
+            request.user.profile.expected_delivery_time = expected_delivery_time
+            request.user.profile.save()
+
+            return redirect('deliveries')
+        else:
+            return JsonResponse({'error': 'Phone number and delivery time required'}, status=400)
+
+    return render(request, 'orders/claim_order_page.html', {'order': order})
+
+@login_required
+def deliveries(request):
+    claimed_orders = Order.objects.filter(delivery_agent=request.user)
+    return render(request, 'orders/deliveries.html', {'claimed_orders': claimed_orders})
+
+@login_required
+def client_orders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'orders/client_orders.html', {'orders': orders})
+
 
 @login_required
 def rate_user(request, user_id):
@@ -69,7 +107,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('order_list')
 
 def register_view(request):
     if request.method == 'POST':

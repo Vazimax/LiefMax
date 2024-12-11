@@ -1,0 +1,12 @@
+
+{% block content %}
+<h1>Claim Order</h1>
+<form method="post">
+    {% csrf_token %}
+    <p>
+        <label for="expected_delivery_time">Expected Delivery Time:</label>
+        <input type="time" name="expected_delivery_time" id="expected_delivery_time" required>
+    </p>
+    <button type="submit">Confirm Claim</button>
+</form>
+{% endblock %}

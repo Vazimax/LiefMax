@@ -34,6 +34,8 @@ class ReviewForm(forms.ModelForm):
 
 
 class UserRegistrationForm(UserCreationForm):
+    phone_number = forms.CharField(max_length=15, required=True, help_text="Enter your phone number.")
+    
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'phone_number', 'password1', 'password2']

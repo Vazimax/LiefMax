@@ -1,0 +1,40 @@
+
+{% block content %}
+<h1>Your Orders</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Items</th>
+            <th>Delivery Location</th>
+            <th>Preferred Delivery Time</th>
+            <th>Delivery Agent</th>
+            <th>Agent Phone Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.items }}</td>
+            <td>{{ order.location }}</td>
+            <td>{{ order.preferred_delivery_time }}</td>
+            <td>
+                {% if order.delivery_agent %}
+                    {{ order.delivery_agent.username }}
+                {% else %}
+                    Not Claimed Yet
+                {% endif %}
+            </td>
+            <td>
+                {% if order.delivery_agent and order.delivery_agent.profile.phone_number %}
+                    {{ order.delivery_agent.profile.phone_number }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
