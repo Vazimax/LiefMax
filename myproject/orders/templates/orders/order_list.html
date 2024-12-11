@@ -1,0 +1,32 @@
+{% include 'nav/navbar.html' %} 
+
+{% block content %}
+<h1>Available Orders</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Items</th>
+            <th>Preferred Delivery Time</th>
+            <th>Category</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.location }}</td>
+            <td>{{ order.items }}</td>
+            <td>{{ order.preferred_delivery_time }}</td>
+            <td>{{ order.get_category_display }}</td>
+            <td>
+                <form method="post" action="{% url 'claim_order' order.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Claim</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

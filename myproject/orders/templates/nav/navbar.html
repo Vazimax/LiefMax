@@ -1,0 +1,12 @@
+<nav>
+    <ul>
+        <li><a href="{% url 'order_list' %}">Order List</a></li>
+        <li><a href="{% url 'place_order' %}">Place Order</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+        {% endif %}
+    </ul>
+</nav>
