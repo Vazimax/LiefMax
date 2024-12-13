@@ -474,14 +474,16 @@
             <a href="{% url 'client_orders' %}" class="nav-item">🛍️ My Orders</a>
             <a href="{% url 'deliveries' %}" class="nav-item">🚚 My Deliveries</a>
             <a href="{% url 'profile' %}" class="nav-item">👤 Profile</a>
-            <button class="post-button">Place New Order</button>
+            <a href="{% url 'place_order' %}">
+                <button class="post-button">Place New Order</button>
+            </a>
         </nav>
         <div class="auth-buttons">
             {% if user.is_authenticated == False %}
-            <a href="#" class="auth-button login">Log in</a>
-            <a href="#" class="auth-button register">Register</a>
+            <a href="{% url 'login' %}" class="auth-button login">Log in</a>
+            <a href="{% url 'register' %}" class="auth-button register">Register</a>
             {% else %}
-            <a href="#" class="auth-button register">Logout</a>
+            <a href="{% url 'logout' %}" class="auth-button register">Logout</a>
             {% endif %}
         </div>
     </div>

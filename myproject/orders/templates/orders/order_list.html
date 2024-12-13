@@ -27,10 +27,10 @@
                     <span class="action">📍 {{order.location}}</span>
                     <span class="action">📍 {{order.created_at}}</span>
                 </div>
-                {% if order.is_claimed == False %}
-                <a href="{% url 'claim_order_page' order.id %}">
-                    <button class="claim-button">Claim</button>
-                </a>
+                {% if order.is_claimed == False and order.user != request.user %}
+                    <a href="{% url 'claim_order_page' order.id %}">
+                        <button class="claim-button">Claim</button>
+                    </a>
                 {% endif %}
             </div>
         {% endif %}

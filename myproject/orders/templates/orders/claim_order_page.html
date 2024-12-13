@@ -1,12 +1,65 @@
 
+
+{% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<h1>Claim Order</h1>
-<form method="post">
-    {% csrf_token %}
-    <p>
-        <label for="expected_delivery_time">Expected Delivery Time:</label>
-        <input type="time" name="expected_delivery_time" id="expected_delivery_time" required>
-    </p>
-    <button type="submit">Confirm Claim</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #15202B;
+      color: #FFFFFF;
+    }
+    .twitter-button {
+      background-color: #1DA1F2;
+      transition: background-color 0.2s;
+    }
+    .twitter-button:hover {
+      background-color: #1991DA;
+    }
+    .input-field {
+      background-color: #253341;
+      border: 1px solid #38444D;
+    }
+    .input-field:focus {
+      border-color: #1DA1F2;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen p-4 md:p-8">
+    <div class="max-w-2xl mx-auto bg-[#192734] rounded-xl p-6 shadow-lg">
+      <h1 class="text-2xl font-bold mb-6 text-white">Claim Order</h1>
+      
+      <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              Expected Delivery Time
+            </label>
+            <input type="time" name="expected_delivery_time" id="expected_delivery_time" required>
+          </div>
+          
+          <div class="pt-4">
+            <button 
+              type="submit"
+              class="twitter-button w-full py-3 rounded-full font-semibold text-white hover:bg-blue-500 transition duration-200"
+            >
+              Confirm Claim
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
 {% endblock %}

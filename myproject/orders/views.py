@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+
 @login_required
 def profile_view(request):
     profile = request.user.profile
@@ -20,6 +21,7 @@ def profile_view(request):
             return redirect('profile')
         else:
             messages.error(request, 'Phone number is required.')
+            
     return render(request, 'accounts/profile.html', {'profile': profile})
 
 
@@ -113,13 +115,13 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('order_list')
+            user = form.save()  # Save the user instance
+            phone_number = form.cleaned_data['phone_number']
+            # Create a profile and assign the phone number
+            user.profile.phone_number = phone_number
+            user.profile.save()
+            login(request, user)
+            return redirect('order_list')
     else:
         form = UserRegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})

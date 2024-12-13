@@ -1,7 +1,7 @@
 from django import forms
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
-
+from django.contrib.auth.models import User
 
 class OrderForm(forms.ModelForm):
     preferred_delivery_time = forms.TimeField(widget=forms.Select(choices=[
@@ -34,8 +34,8 @@ class ReviewForm(forms.ModelForm):
 
 
 class UserRegistrationForm(UserCreationForm):
-    phone_number = forms.CharField(max_length=15, required=True, help_text="Enter your phone number.")
-    
+    phone_number = forms.CharField(max_length=15, required=True, help_text='Enter your phone number.')
+
     class Meta:
         model = User
         fields = ['username', 'email', 'phone_number', 'password1', 'password2']
