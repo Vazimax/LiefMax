@@ -18,6 +18,10 @@ class Order(models.Model):
     is_claimed = models.BooleanField(default=False)
     delivery_agent = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='deliveries')
     created_at = models.DateTimeField(auto_now_add=True)
+    is_confirmed = models.BooleanField(default=False)
+    is_delivery_agent_confirmed = models.BooleanField(default=False)
+    is_canceled = models.BooleanField(default=False)  # New field
+    cancellation_reason = models.CharField(max_length=255, null=True, blank=True)  # New field
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"

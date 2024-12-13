@@ -194,7 +194,18 @@
                                 <span style="color: var(--twitter-light-gray)">N/A</span>
                             {% endif %}
                         </td>
+                        <td>
+                            <!-- Customer Confirmation -->
+                            {% if order.user == request.user and not order.is_confirmed and order.delivery_agent %}
+                                <a href="{% url 'confirm_delivery' order.id %}">
+                                    <button class="confirm-button">Confirm Delivery</button>
+                                </a>
+                            {% elif order.is_confirmed %}
+                                <span>Customer Confirmed</span>
+                            {% endif %}
+                        </td>
                     </tr>
+                    
                     {% endfor %}
                 </tbody>
             </table>

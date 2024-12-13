@@ -1,0 +1,16 @@
+
+{% block content %}
+<div class="confirmation-container">
+    <h2>Confirm Cancellation</h2>
+    <p>Are you sure you want to cancel this order?</p>
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Items:</strong> {{ order.items }}</p>
+    <p><strong>Location:</strong> {{ order.location }}</p>
+
+    <form action="{% url 'cancel_order' order.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="confirm-button">Yes, Cancel Order</button>
+    </form>
+    <a href="{% url 'order_list' %}" class="cancel-link">No, Go Back</a>
+</div>
+{% endblock %}

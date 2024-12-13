@@ -184,9 +184,27 @@
                         <td>{{ order.items }}</td>
                         <td>{{ order.location }}</td>
                         <td>{{ order.preferred_delivery_time }}</td>
+                        <td>
+                            <!-- Delivery Agent Confirmation -->
+                            {% if order.delivery_agent == request.user and not order.is_delivery_agent_confirmed %}
+                                <a href="{% url 'confirm_delivery_agent' order.id %}">
+                                    <button class="confirm-button">Confirm Delivery</button>
+                                </a>
+                            {% elif order.is_delivery_agent_confirmed %}
+                                <span>Agent Confirmed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if order.delivery_agent == user and not order.is_delivery_agent_confirmed %}
+                                <a href="{% url 'confirm_cancel_order' order.id %}" class="cancel-link">
+                                    <button class="cancel-button">Cancel</button>
+                                </a>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
+                
             </table>
             {% else %}
             <div class="empty-state">

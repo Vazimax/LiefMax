@@ -125,3 +125,51 @@ def register_view(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})
+
+from django.shortcuts import redirect
+
+@login_required
+def confirm_delivery(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    if not order.is_confirmed:
+        order.is_confirmed = True
+        order.save()
+    return redirect('client_order')
+
+@login_required
+def confirm_delivery_agent(request, order_id):
+    order = get_object_or_404(Order, id=order_id, delivery_agent=request.user)
+    if not order.is_delivery_agent_confirmed:
+        order.is_delivery_agent_confirmed = True
+        order.save()
+    return redirect('deliveries')
+
+@login_required
+def confirm_cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    # Ensure only the user who ordered or the delivery agent can access this
+    if order.user != request.user and order.delivery_agent != request.user:
+        return redirect('order_list')  # Redirect if unauthorized
+
+    return render(request, 'orders/confirm_cancel.html', {'order': order})
+
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    # Ensure only the user who ordered or the delivery agent can cancel
+    if order.user != request.user and order.delivery_agent != request.user:
+        return redirect('order_list')  # Redirect if unauthorized
+
+    if order.delivery_agent == request.user:
+        order.delivery_agent = None  # Unassign delivery agent
+        order.is_canceled = True  # Mark as canceled
+        order.cancellation_reason = "Delivery agent canceled"
+    else:
+        order.is_canceled = True
+        order.cancellation_reason = "Orderer canceled"
+
+    order.is_claimed = False
+    order.save()
+    return redirect('order_list')  # Redirect after cancellation
