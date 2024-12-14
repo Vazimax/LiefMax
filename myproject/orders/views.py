@@ -7,6 +7,9 @@ from .forms import OrderForm, ReviewForm, UserRegistrationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.http import HttpResponseForbidden
+from .models import has_unconfirmed_orders
+from django.urls import reverse
 
 
 @login_required
@@ -25,8 +28,16 @@ def profile_view(request):
     return render(request, 'accounts/profile.html', {'profile': profile})
 
 
-@login_required
 def place_order(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You need to log in to post an order.")
+        return redirect(f"{reverse('login')}?next={request.path}")
+
+
+    if has_unconfirmed_orders(request.user):
+        messages.error(request, "You can only place one order at a time")
+        return redirect('order_list')
+
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -43,8 +54,11 @@ def order_list(request):
     orders = Order.objects.filter(is_claimed=False).order_by('preferred_delivery_time')
     return render(request, 'orders/order_list.html', {'orders': orders})
 
-@login_required
 def claim_order_page(request, order_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You need to log in to claim an order.")
+        return redirect(f"{reverse('login')}?next={request.path}")
+
     order = get_object_or_404(Order, id=order_id)
     if order.is_claimed:
         return JsonResponse({'error': 'Order already claimed'}, status=400)
@@ -173,3 +187,25 @@ def cancel_order(request, order_id):
     order.is_claimed = False
     order.save()
     return redirect('order_list')  # Redirect after cancellation
+
+
+@login_required
+def confirm_cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    # Only allow the person who ordered to cancel
+    if order.user != request.user:
+        return HttpResponseForbidden("You are not allowed to cancel this order.")
+
+    # Ensure the order hasn't been claimed
+    if order.is_claimed:
+        return HttpResponseForbidden("This order has already been claimed and cannot be canceled.")
+
+    if request.method == "POST":
+        # Perform cancellation
+        order.is_canceled = True
+        order.cancellation_reason = "Orderer canceled"
+        order.delete()
+        return redirect('client_orders')  # Redirect to order list
+
+    return render(request, 'orders/confirm_cancel_order.html', {'order': order})

@@ -207,8 +207,16 @@
                         <a href="{% url 'logout' %}" class="logout-link">Logout</a>
                     </div>
                 {% else %}
+                {% if messages %}
+                    <div class="user-info">
+                        {% for message in messages %}
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 <form method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
                     <div class="form-group">
                         <input type="text" name="{{ form.username.name }}" 
                                placeholder="Username" 

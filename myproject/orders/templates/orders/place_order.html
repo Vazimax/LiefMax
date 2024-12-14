@@ -1,6 +1,222 @@
+{% extends 'base.html' %}
 
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --twitter-blue: #1DA1F2;
+            --twitter-dark: #15202B;
+            --twitter-darker: #192734;
+            --twitter-light: #8899A6;
+            --twitter-lighter: #FFFFFF;
+        }
 
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Place Order</button>
-</form>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--twitter-dark);
+            color: var(--twitter-lighter);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            background-color: rgba(25, 39, 52, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(136, 153, 166, 0.2);
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            fill: var(--twitter-blue);
+            transition: fill 0.2s ease;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .checkout-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: var(--twitter-darker);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: var(--twitter-lighter);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(136, 153, 166, 0.2);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        p {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: var(--twitter-light);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            background-color: var(--twitter-dark);
+            border: 1px solid rgba(136, 153, 166, 0.3);
+            border-radius: 4px;
+            padding: 12px 16px;
+            color: var(--twitter-lighter);
+            font-size: 16px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--twitter-blue);
+            box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238899A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        button {
+            background-color: var(--twitter-blue);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 15px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        button:hover {
+            background-color: #1a91da;
+        }
+
+        /* Error styling */
+        .errorlist {
+            list-style: none;
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .checkout-container {
+                margin: 16px auto;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .main-container {
+                padding: 0 12px;
+            }
+
+            .checkout-container {
+                margin: 12px auto;
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            form {
+                gap: 20px;
+            }
+
+            input, select, textarea {
+                padding: 10px 14px;
+                font-size: 15px;
+            }
+
+            p {
+                gap: 6px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            button {
+                padding: 12px 24px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="main-container">
+        <div class="checkout-container">
+            <h1>Place Your Order</h1>
+            {% if messages %}
+                <div class="user-info">
+                        {% for message in messages %}
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                {{ form.as_p }}
+                <button type="submit">Place Order</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
+{% endblock %}

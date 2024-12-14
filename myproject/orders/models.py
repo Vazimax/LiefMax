@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db.models import Q
 
 class Order(models.Model):
     CATEGORY_CHOICES = [
@@ -20,8 +21,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_confirmed = models.BooleanField(default=False)
     is_delivery_agent_confirmed = models.BooleanField(default=False)
-    is_canceled = models.BooleanField(default=False)  # New field
-    cancellation_reason = models.CharField(max_length=255, null=True, blank=True)  # New field
+    is_canceled = models.BooleanField(default=False)  
+    cancellation_reason = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
@@ -48,3 +49,6 @@ class Profile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+def has_unconfirmed_orders(user):
+    return Order.objects.filter(user=user, is_confirmed=False, is_canceled=False).exists()

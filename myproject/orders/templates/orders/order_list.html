@@ -3,6 +3,13 @@
 {% block content %}
 <main class="main-content">
     <div class="header">Latest Orders</div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
     {% for order in orders %}
         {% if order.is_claimed == False %}
             <div class="post">

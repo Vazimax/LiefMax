@@ -454,7 +454,7 @@
 </head>
 <body>
     <div class="mobile-header">
-        <div class="logo">🛒 LocalShop</div>
+        <a href="{% url 'order_list' %}"><div class="logo">🛒 LocalShop</div></a>
         {% if user.is_authenticated == False %}
         <div class="mobile-auth-buttons">
             <a href="{% url 'login' %}" class="mobile-auth-button login">Log in</a>
@@ -501,7 +501,7 @@
             <a href="{% url 'order_list' %}" class="mobile-nav-item">🏠</a>
             <a href="{% url 'client_orders' %}" class="mobile-nav-item">🛍️</a>
             <a href="{% url 'deliveries' %}" class="mobile-nav-item">🚚</a>
-            <a href="#" class="mobile-nav-item">👤</a>
+            <a href="{% url 'profile' %}" class="mobile-nav-item">👤</a>
         </div>
     </nav>
 </body>
