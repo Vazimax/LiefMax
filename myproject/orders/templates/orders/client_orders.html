@@ -167,6 +167,7 @@
                         <th>Preferred Time</th>
                         <th>Delivery Agent</th>
                         <th>Agent Phone</th>
+                        <th>Cancelling</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,7 +209,7 @@
                         {% if not order.is_claimed and order.user == request.user %}
                         <td>
                             <a href="{% url 'confirm_cancel_order' order.id %}">
-                                <button class="cancel-button">Cancel</button>
+                                <button style="border-radius: 18px; background-color: red; color: white; padding: 8px 12px; font-style: oblique; font-size: 14px;">Cancel</button>
                             </a>
                         </td>
                         {% endif %}

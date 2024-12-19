@@ -150,6 +150,50 @@
                 font-size: 14px;
             }
         }
+
+        .register {
+            background: var(--primary);
+            border: none;
+            color: white;
+        }
+
+        .cancel{
+            background: red;
+            border: none;
+            color: white;
+        }
+
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding: 20px;
+        }
+
+        .auth-button {
+            padding: 10px 20px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+        }
+
+        .mobile-auth-buttons {
+                display: flex;
+                gap: 10px;
+            }
+
+            .mobile-auth-button {
+                padding: 8px 16px;
+                border-radius: 9999px;
+                font-size: 14px;
+                font-weight: bold;
+                text-decoration: none;
+            }
+
     </style>
 </head>
 <body>
@@ -165,6 +209,9 @@
                         <th>Items</th>
                         <th>Location</th>
                         <th>Expected Time</th>
+                        <th>Confirming</th>
+                        <th>Cancelling</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -188,16 +235,20 @@
                             <!-- Delivery Agent Confirmation -->
                             {% if order.delivery_agent == request.user and not order.is_delivery_agent_confirmed %}
                                 <a href="{% url 'confirm_delivery_agent' order.id %}">
-                                    <button class="confirm-button">Confirm Delivery</button>
+                                    <div class="mobile-auth-buttons">
+                                        <button class="mobile-auth-button register">Confirm Delivery</button>
+                                    </div>
                                 </a>
                             {% elif order.is_delivery_agent_confirmed %}
-                                <span>Agent Confirmed</span>
+                                <span>Confirmed</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if order.delivery_agent == user and not order.is_delivery_agent_confirmed %}
                                 <a href="{% url 'confirm_cancel_order' order.id %}" class="cancel-link">
-                                    <button class="cancel-button">Cancel</button>
+                                    <div class="mobile-auth-buttons">
+                                        <a href="{% url 'confirm_cancel_order1' order.id %}" class="mobile-auth-button cancel">Cancel</a>
+                                    </div>
                                 </a>
                             {% endif %}
                         </td>

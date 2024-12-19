@@ -454,7 +454,7 @@
 </head>
 <body>
     <div class="mobile-header">
-        <a href="{% url 'order_list' %}"><div class="logo">🛒 LiefMax </div></a>
+        <a href="{% url 'order_list' %}"><div class="logo">LiefMax </div></a>
         {% if user.is_authenticated == False %}
         <div class="mobile-auth-buttons">
             <a href="{% url 'login' %}" class="mobile-auth-button login">Log in</a>
@@ -468,7 +468,7 @@
     </div>
 
     <div class="sidebar">
-        <div class="logo">🛒 LiefMax </div>
+        <a href="{% url 'order_list' %}"><div class="logo">LiefMax </div></a>
         <nav>
             <a href="{% url 'order_list' %}" class="nav-item">🏠 Home</a>
             <a href="{% url 'client_orders' %}" class="nav-item">🛍️ My Orders</a>

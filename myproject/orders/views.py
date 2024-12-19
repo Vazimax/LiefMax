@@ -11,6 +11,9 @@ from django.http import HttpResponseForbidden
 from .models import has_unconfirmed_orders
 from django.urls import reverse
 
+def home(request):
+
+    return render(request, 'home.html')
 
 @login_required
 def profile_view(request):
@@ -35,7 +38,7 @@ def place_order(request):
 
 
     if has_unconfirmed_orders(request.user):
-        messages.error(request, "You can only place one order at a time")
+        messages.error(request, "You can only place one order at a time!")
         return redirect('order_list')
 
     if request.method == 'POST':
@@ -159,7 +162,7 @@ def confirm_delivery_agent(request, order_id):
     return redirect('deliveries')
 
 @login_required
-def confirm_cancel_order(request, order_id):
+def confirm_cancel_order1(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
     # Ensure only the user who ordered or the delivery agent can access this
