@@ -10,13 +10,19 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from .models import has_unconfirmed_orders
 from django.urls import reverse
+from datetime import datetime
+from django.utils.timezone import now
 
 def home(request):
 
     return render(request, 'home.html')
 
-@login_required
+
 def profile_view(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You need to log in to see your profile.")
+        return redirect(f"{reverse('login')}?next={request.path}")
+
     profile = request.user.profile
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number')
@@ -66,16 +72,17 @@ def claim_order_page(request, order_id):
     if order.is_claimed:
         return JsonResponse({'error': 'Order already claimed'}, status=400)
 
+    expected_time_str = request.POST.get("expected_delivery_time")
     if request.method == 'POST':
         expected_delivery_time = request.POST.get('expected_delivery_time')
 
         if expected_delivery_time:
             order.is_claimed = True
             order.delivery_agent = request.user
+            today_date = now().date()
+            expected_time = datetime.strptime(expected_time_str, "%H:%M").time()
+            order.expected_delivery_time = datetime.combine(today_date, expected_time)
             order.save()
-
-            request.user.profile.expected_delivery_time = expected_delivery_time
-            request.user.profile.save()
 
             return redirect('deliveries')
         else:
@@ -83,15 +90,24 @@ def claim_order_page(request, order_id):
 
     return render(request, 'orders/claim_order_page.html', {'order': order})
 
-@login_required
+
 def deliveries(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You need to log in to see your deliveries.")
+        return redirect(f"{reverse('login')}?next={request.path}")
+    
     claimed_orders = Order.objects.filter(delivery_agent=request.user)
     return render(request, 'orders/deliveries.html', {'claimed_orders': claimed_orders})
 
-@login_required
+
 def client_orders(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You need to log in to see the orders you placed.")
+        return redirect(f"{reverse('login')}?next={request.path}")
+
     orders = Order.objects.filter(user=request.user)
-    return render(request, 'orders/client_orders.html', {'orders': orders})
+    claimed_orders = Order.objects.filter(is_claimed=True, user=request.user)
+    return render(request, 'orders/client_orders.html', {'orders': orders, 'claimed_orders': claimed_orders})
 
 
 @login_required
@@ -132,9 +148,8 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()  # Save the user instance
+            user = form.save() 
             phone_number = form.cleaned_data['phone_number']
-            # Create a profile and assign the phone number
             user.profile.phone_number = phone_number
             user.profile.save()
             login(request, user)
@@ -151,7 +166,7 @@ def confirm_delivery(request, order_id):
     if not order.is_confirmed:
         order.is_confirmed = True
         order.save()
-    return redirect('client_order')
+    return redirect('client_orders')
 
 @login_required
 def confirm_delivery_agent(request, order_id):

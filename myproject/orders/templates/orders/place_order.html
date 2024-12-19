@@ -213,6 +213,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ request.GET.next }}">
                 {{ form.as_p }}
+                <p><b>Note:</b> The delivery fee is 1€. Tips are optional!</p>
                 <button type="submit">Place Order</button>
             </form>
         </div>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <main class="main-content">
     <div class="header">Latest Orders</div>
     {% if messages %}
@@ -13,6 +14,16 @@
                 <br>
             </div>
         </center>
+    {% endif %}
+    {% if not orders %}
+    <div style="
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--twitter-light-gray);"
+    >
+        <h2>No Orders Yet</h2>
+        <p>Place an order for it to be showen here.</p>
+    </div>
     {% endif %}
     {% for order in orders %}
         {% if order.is_claimed == False %}

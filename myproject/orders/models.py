@@ -23,6 +23,7 @@ class Order(models.Model):
     is_delivery_agent_confirmed = models.BooleanField(default=False)
     is_canceled = models.BooleanField(default=False)  
     cancellation_reason = models.CharField(max_length=255, null=True, blank=True)
+    expected_delivery_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"

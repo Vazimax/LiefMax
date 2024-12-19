@@ -5,10 +5,18 @@ from django.contrib.auth.models import User
 
 class OrderForm(forms.ModelForm):
     preferred_delivery_time = forms.TimeField(widget=forms.Select(choices=[
-        ("06:00", "6:00 AM"),
         ("07:00", "7:00 AM"),
+        ("07:15", "7:15 AM"),
+        ("07:30", "7:30 AM"),
+        ("07:45", "7:45 AM"),
         ("08:00", "8:00 AM"),
+        ("08:15", "8:15 AM"),
+        ("08:30", "8:30 AM"),
+        ("08:45", "8:45 AM"),
         ("09:00", "9:00 AM"),
+        ("09:15", "9:15 AM"),
+        ("09:30", "9:30 AM"),
+        ("09:45", "9:45 AM"),
         ("10:00", "10:00 AM"),
         ("11:00", "11:00 AM"),
         ("12:00", "12:00 PM"),
@@ -21,6 +29,11 @@ class OrderForm(forms.ModelForm):
         ("19:00", "7:00 PM"),
         ("20:00", "8:00 PM"),
         ("21:00", "9:00 PM"),
+        ("22:00", "10:00 PM"),
+        ("23:00", "11:00 PM"),
+        ("00:00", "12:00 AM"),
+        ("01:00", "1:00 AM"),
+
     ]))
 
     class Meta:

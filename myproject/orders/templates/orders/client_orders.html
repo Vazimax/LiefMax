@@ -167,6 +167,8 @@
                         <th>Preferred Time</th>
                         <th>Delivery Agent</th>
                         <th>Agent Phone</th>
+                        <th>Expected Time</th>
+                        <th>Confirming</th>
                         <th>Cancelling</th>
                     </tr>
                 </thead>
@@ -195,13 +197,12 @@
                                 <span style="color: var(--twitter-light-gray)">N/A</span>
                             {% endif %}
                         </td>
-                        {% if order.user == request.user and not order.is_confirmed and order.delivery_agent %}
+                        <td>{{order.expected_delivery_time}}</td>
                         <td>
-                                <a href="{% url 'confirm_delivery' order.id %}">
-                                    <button class="confirm-button">Confirm Delivery</button>
-                                </a>
-                        </td>
-                        <td>
+                            {% if order.user == request.user and not order.is_confirmed and order.delivery_agent %}
+                            <a href="{% url 'confirm_delivery' order.id %}">
+                                <button style="border-radius: 15px; background-color: #1DA1F2; color: white; padding: 6px 10px; font-size: 12px;"><b>Confirm Delivery</b></button>
+                            </a>
                             {% elif order.is_confirmed %}
                                 <span>Customer Confirmed</span>
                             {% endif %}
@@ -219,6 +220,10 @@
                 </tbody>
             </table>
         </div>
+        <br>
+        <center>
+            <p><b>Note:</b> You can't cancel an order once it's <b>claimed!</b></p>
+        </center>
     </div>
 </body>
 </html>
